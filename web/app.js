@@ -94,16 +94,21 @@ function laneState(side, id, t) {
   return t.oldest_open_s > stuckAfter() ? [`${num(t.running)} stuck mid-run`, "waiting"] : ["✓ Keeping up", "good"];
 }
 
-// One square per document in flight, the same unit in every lane, so counts compare across
-// tenants. Done documents leave the lane. Past LANE_CELLS, in-progress and waiting split the
-// lane so both stay visible, and a cut-off group ends in "…".
+// One square per document, the same unit in every lane, so counts compare across tenants: done
+// in the tenant's color, in progress grey, waiting outlined. Past LANE_CELLS, the groups take
+// turns claiming cells so each stays visible, and a cut-off group ends in "…".
 const LANE_CELLS = 30;
 function laneDocs(t) {
-  const run = Math.min(t.running, Math.max(LANE_CELLS / 2, LANE_CELLS - t.waiting));
+  const groups = [["done", t.done], ["run", t.running], ["wait", t.waiting]];
+  const shown = groups.map(() => 0);
+  let left = LANE_CELLS;
+  while (left > 0 && groups.some(([, n], i) => shown[i] < n)) {
+    groups.forEach(([, n], i) => { if (left > 0 && shown[i] < n) { shown[i]++; left--; } });
+  }
   const group = (cls, shown, n) => shown < n
     ? `<i class="${cls}"></i>`.repeat(shown - 1) + `<span class="more ${cls}">…</span>`
     : `<i class="${cls}"></i>`.repeat(shown);
-  return group("run", run, t.running) + group("wait", Math.min(t.waiting, LANE_CELLS - run), t.waiting);
+  return groups.map(([cls, n], i) => group(cls, shown[i], n)).join("");
 }
 
 function renderAct1() {
