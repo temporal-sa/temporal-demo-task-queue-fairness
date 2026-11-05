@@ -181,7 +181,7 @@ async def settings(session: str = Depends(session_id)) -> dict:
         ],
         "small_tenants": SMALL_TENANTS,
         "temporal_ui": config.TEMPORAL_UI_URL,
-        "namespace": State.client.namespace,
+        "namespace": config.TEMPORAL_UI_NAMESPACE or State.client.namespace,
     }
 
 

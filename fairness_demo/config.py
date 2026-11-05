@@ -41,7 +41,10 @@ API_HOST = os.environ.get("API_HOST", "127.0.0.1")
 # named "api" exists, and a bare PORT can never collide with a Service link variable.
 API_PORT = _int("PORT", 8080)
 SESSION_SECRET = os.environ.get("SESSION_SECRET", "")
-TEMPORAL_UI_URL = os.environ.get("TEMPORAL_UI_URL", "http://localhost:8233")
+TEMPORAL_UI_URL = os.environ.get("TEMPORAL_UI_URL", "http://localhost:8233").rstrip("/")
+# The namespace the UI links open, when the platform names one: the qualified Cloud
+# namespace, or a crashable workspace's dev server namespace.
+TEMPORAL_UI_NAMESPACE = os.environ.get("TEMPORAL_UI_NAMESPACE", "")
 
 SIM_MODEL_SECONDS = _float("SIM_MODEL_SECONDS", 1.5)
 SIM_TOOL_SECONDS = _float("SIM_TOOL_SECONDS", 0.5)
