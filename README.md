@@ -7,7 +7,7 @@ One tenant's 2,000-document bulk upload lands on a shared AI document pipeline. 
 What's in it:
 
 - Two identical Task Queues side by side, new for every run. `docs-fifo` has no fairness keys; `docs-fair` gives each tenant a fairness key and a weight from its plan.
-- One [temporal-agent-harness](https://pypi.org/project/temporal-agent-harness/) agent run per document. The agent reads the document, then calls the extract, classify and summarize tools. Each tool is an Activity.
+- One [Temporal Agent Kit](https://pypi.org/project/temporal-agent-kit/) agent run per document. The agent reads the document, then calls the extract, classify and summarize tools. Each tool is an Activity.
 - [Priority and fairness](https://docs.temporal.io/develop/python/temporal-client#priority) set once, when the Workflow starts. The agent's Activities inherit the key and weight, so the agent code never sets them.
 - [Update-With-Start](https://docs.temporal.io/develop/python/message-passing#update-with-start) for every document upload, Signal-With-Start for the presenter's controls, and [Visibility](https://docs.temporal.io/visibility) List for the live view.
 - A presenter dashboard in the Temporal dark theme: a low-density main view, a details drawer, a weights act and a wrap-up card.
@@ -104,7 +104,7 @@ Set these in the environment of both the Worker and the API.
 ## Temporal Cloud
 
 - Turn on Fairness for the namespace, and add the Search Attributes `DocSession` (Keyword), `DocTenant` (Keyword) and `DocStartedAt` (Datetime).
-- Each document costs about 13 Actions: 2 for Update-With-Start, 4 Activities, 1 Search Attribute upsert, and 6 Signals that the agent harness sends to publish each tool's start and end events. A default Act 1 is about 4,060 documents across both queues, about 53,000 Actions. The bulk upload's starts arrive in a burst; if they pass the Namespace's Actions-per-second limit, the client retries the throttled ones. A default Act 2 is 2,000 documents, about 26,000.
+- Each document costs about 13 Actions: 2 for Update-With-Start, 4 Activities, 1 Search Attribute upsert, and 6 Signals that Agent Kit sends to publish each tool's start and end events. A default Act 1 is about 4,060 documents across both queues, about 53,000 Actions. The bulk upload's starts arrive in a burst; if they pass the Namespace's Actions-per-second limit, the client retries the throttled ones. A default Act 2 is 2,000 documents, about 26,000.
 - The dashboard reads Visibility List and Describe, which aren't Actions. It runs no Queries.
 - Act 2's shares come from the run's Workers, the only place that sees every Activity start. `serve_run_queues` counts starts per side and tenant and puts the last 90 seconds in its heartbeat details, which the dashboard reads with Describe. The SDK sends a heartbeat about every 8 seconds, about 8 Actions a minute per running run.
 
@@ -122,6 +122,6 @@ Set these in the environment of both the Worker and the API.
 - **Late completions on the FIFO side.** On `docs-fifo`, a document's tool Activities queue behind the whole remaining backlog, not just its model call. Completions lag starts, which the completions chart shows.
 - **Act 1 uses plan weights.** Act 1 already runs with weights 5 / 2 / 1 / 1. The small tenants still start quickly because each one has documents waiting only now and then.
 - **Start time.** The Workflow records `DocStartedAt` when the model call returns. For small-tenant documents that are still running, the API reads the model call's start time with Describe, so their wait is exact.
-- **Closing the agent.** temporal-agent-harness 0.7.0 exposes close only as a Signal, and a Workflow can't Signal itself. The agent calls the runner's internal `_handle_close()` after the document is processed.
+- **Closing the agent.** Temporal Agent Kit 0.12.1 exposes close only as a Signal, and a Workflow can't Signal itself. The agent calls the runner's internal `_handle_close()` after the document is processed.
 - **Reset.** Reset terminates the old run's Workflows with one batch operation, including its `RunWorkers`, which stops that run's Workers. The terminated documents' Activity tasks stay in the old run's Task Queues, which nothing polls any more, so they can't hold up the next run.
 - **Not yet verified.** A default Act 1 was run locally through the bulk upload and the whole trickle, but not until Acme's backlog drained. A default Act 2 hasn't been run.

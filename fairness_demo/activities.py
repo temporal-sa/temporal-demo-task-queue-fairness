@@ -16,7 +16,7 @@ from pydantic import BaseModel
 from temporalio import activity
 from temporalio.workflow import ActivityConfig
 
-from temporal_agent_harness.harness import agent
+from temporal_agent_kit import agent
 
 from .config import SIM_MODEL_SECONDS, SIM_TOOL_SECONDS
 

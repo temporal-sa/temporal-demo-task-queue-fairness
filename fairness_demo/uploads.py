@@ -25,7 +25,7 @@ with workflow.unsafe.imports_passed_through():
         WorkflowUpdateStage,
     )
 
-    from temporal_agent_harness.harness.agent_protocol import (
+    from temporal_agent_kit.agent_protocol import (
         SEND_AGENT_MESSAGE_UPDATE,
         AgentConfig,
         AgentMessage,

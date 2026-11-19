@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "Temporal Task Queue Fairness demo: one tenant's bulk upload versus everyone else's documents."
 requires-python = ">=3.11"
 dependencies = [
-    "temporalio==1.34.0",
-    "temporal-agent-harness==0.7.0",
+    "temporalio==1.36.1",
+    "temporal-agent-kit==0.12.1",
     "fastapi==0.143.3",
     "uvicorn==0.54.0",
 ]
