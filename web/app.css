@@ -80,13 +80,16 @@ body[data-view="close"] .view-close { display: grid; }
 .tenant .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lane-key { display: flex; gap: 1.4rem; margin: -1rem 0 -.8rem; font-size: .75rem; color: var(--slate-300); }
 .lane-key i { display: inline-block; width: .8rem; height: .8rem; margin-right: .4rem; vertical-align: -.1rem; }
-.lane-key .k-run { background: var(--indigo-100); }
+.lane-key .k-done { background: var(--indigo-100); }
+.lane-key .k-run { background: var(--slate-500); }
 .lane-key .k-wait { box-shadow: inset 0 0 0 2px var(--yellow); }
 .docs { display: grid; grid-template-columns: repeat(30, minmax(0, 1.4rem)); gap: .25rem; align-items: center; min-height: 1.4rem; }
 .docs i { aspect-ratio: 1; }
-.docs i.run { background: var(--c); }
+.docs i.done { background: var(--c); }
+.docs i.run { background: var(--slate-500); }
 .docs i.wait { box-shadow: inset 0 0 0 2px var(--yellow); }
 .docs .more { font-family: var(--font-mono); font-size: 1rem; line-height: 1; text-align: center; color: var(--c); }
+.docs .more.run { color: var(--slate-300); }
 .docs .more.wait { color: var(--yellow); }
 .state { font-family: var(--font-mono); font-size: .9rem; text-align: right; white-space: nowrap; }
 .state small { display: block; margin-top: .15rem; font-size: .72rem; color: var(--slate-300); }
