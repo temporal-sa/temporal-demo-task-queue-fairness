@@ -1,4 +1,4 @@
-"""The document agent: one temporal-agent-harness agent run per uploaded document.
+"""The document agent: one Temporal Agent Kit agent run per uploaded document.
 
 The agent knows nothing about tenants, fairness keys, or weights. The upload starts its run
 with the tenant's fairness key and plan weight, and Temporal applies them to every Workflow
@@ -14,9 +14,9 @@ from temporalio.contrib.workflow_streams import WorkflowStream
 with workflow.unsafe.imports_passed_through():
     from pydantic import BaseModel
 
-    from temporal_agent_harness.harness import agent
-    from temporal_agent_harness.harness.agent_protocol import AgentConfig, ToolApprovalPolicy
-    from temporal_agent_harness.harness.agent_workflow import AgentWorkflowRunner
+    from temporal_agent_kit import agent
+    from temporal_agent_kit.agent_protocol import AgentConfig, ToolApprovalPolicy
+    from temporal_agent_kit.agent_workflow import AgentWorkflowRunner
 
     from .activities import DOCUMENT_TOOLS, ModelRequest, call_model
     from .search_attributes import DOC_STARTED_AT
@@ -83,7 +83,7 @@ class DocumentAgent:
         results = dict(zip((call.name for call in plan.tool_calls), outputs))
 
         # One agent run per document, so the run ends once its only message is handled. A
-        # Workflow can't Signal itself, and harness 0.7.0 exposes closing only as the
+        # Workflow can't Signal itself, and Agent Kit 0.12.1 exposes closing only as the
         # "close" Signal, so this calls the runner's handler for that Signal directly.
         self._runner._handle_close()
         return ProcessedDocument(

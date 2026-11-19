@@ -16,7 +16,7 @@ from temporalio.client import Client
 from temporalio.service import RPCError
 from temporalio.worker import Worker
 
-from temporal_agent_harness.plugin import AgentHarnessPlugin
+from temporal_agent_kit.plugin import AgentKitPlugin
 
 from . import config
 from .activities import DOCUMENT_TOOLS
@@ -34,7 +34,7 @@ async def connect() -> Client:
     # Payloads here are small; offloading to local disk would break a multi-host deploy.
     return await Client.connect(
         **config.client_connect_config(),
-        plugins=[AgentHarnessPlugin(tools=DOCUMENT_TOOLS, large_payload_offload=None)],
+        plugins=[AgentKitPlugin(tools=DOCUMENT_TOOLS, large_payload_offload=None)],
     )
 
 
